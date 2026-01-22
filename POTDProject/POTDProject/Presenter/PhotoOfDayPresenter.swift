@@ -38,7 +38,14 @@ extension PhotoOfDayPresenter: PhotoOfDayInteractorOutputProtocol {
     }
     
     func fetchFailure(error: Error) {
+        let message: String
         view?.hideLoading()
-        view?.showError(error.localizedDescription)
+
+        if case let APIError.serverError(msg) = error {
+            message = msg
+        } else {
+            message = "ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่"
+        }
+        view?.showError(message)
     }
 }

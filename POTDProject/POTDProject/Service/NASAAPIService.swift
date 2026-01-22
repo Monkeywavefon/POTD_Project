@@ -19,7 +19,7 @@ final class NASAAPIService: NASAAPIServiceProtocol {
     ) {
         
         guard let url = buildURL(start: startDate, end: endDate) else {
-            completion(.failure(APIError.invalidURL))
+            completion(.failure(APIError.urlError))
             return
         }
         print(url)
@@ -31,14 +31,27 @@ final class NASAAPIService: NASAAPIServiceProtocol {
                 completion(.failure(error))
                 return
             }
-            
-            guard let http = response as? HTTPURLResponse,
-                  200..<300 ~= http.statusCode,
-                  let data = data else {
+            if let http = response as? HTTPURLResponse {
+                print("Status Code:", http.statusCode)
+            }
+
+            guard let data = data else {
+                print("❌ No data")
                 completion(.failure(APIError.invalidResponse))
                 return
             }
-            
+
+            guard let http = response as? HTTPURLResponse,
+                  200..<300 ~= http.statusCode else {
+                if let nasaError = try? JSONDecoder().decode(NASAErrorResponse.self, from: data) {
+                    completion(.failure(APIError.serverError(nasaError.msg)))
+                } else {
+                    completion(.failure(APIError.invalidResponse))
+                }
+                return
+            }
+
+
             do {
                 let decoder = JSONDecoder()
                 let items = try decoder.decode([APODItem].self, from: data)

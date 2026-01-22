@@ -16,12 +16,26 @@ final class PhotoOfDayViewController: UIViewController {
     private lazy var selectDayButton: UIButton = {
         let btn = UIButton(type: .system)
         btn.setTitleColor(.white, for: .normal)
-        btn.setTitle("Select Day", for: .normal)
+        btn.setTitle("เลือกวัน", for: .normal)
         btn.addTarget(self, action: #selector(actionSelect), for: .touchUpInside)
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.backgroundColor = .gray
+        btn.clipsToBounds = true
+        btn.layer.cornerRadius = 10
         return btn
     }()
+    
+    private lazy var lbWarnig: UILabel = {
+        let lb = UILabel()
+        lb.text = "กรุณาเลือกวันที่ต้องการ"
+        lb.textColor = .red
+        lb.textAlignment = .center
+        lb.font = UIFont.systemFont(ofSize: 30, weight: .semibold)
+        lb.numberOfLines = 0
+        lb.translatesAutoresizingMaskIntoConstraints = false
+        return lb
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -47,6 +61,7 @@ final class PhotoOfDayViewController: UIViewController {
         setupIndicator()
         view.addSubview(listView)
         view.addSubview(selectDayButton)
+        view.addSubview(lbWarnig)
         view.bringSubviewToFront(activityIndicator)
         
         listView.translatesAutoresizingMaskIntoConstraints = false
@@ -63,6 +78,13 @@ final class PhotoOfDayViewController: UIViewController {
             selectDayButton.widthAnchor.constraint(equalToConstant: 120),
             selectDayButton.heightAnchor.constraint(equalToConstant: 35),
             selectDayButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+        ])
+        
+        NSLayoutConstraint.activate([
+            lbWarnig.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            lbWarnig.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            lbWarnig.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
+            lbWarnig.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40)
         ])
     }
     
@@ -135,6 +157,10 @@ extension PhotoOfDayViewController: PhotoOfDayViewProtocol {
 }
 
 extension PhotoOfDayViewController: PhotoViewerDelegate {
+    func isEmpty(empty: Bool) {
+        self.lbWarnig.isHidden = !empty
+    }
+    
     func didSelect(item: APODItem) {
         presenter.didSelectWatchDetail(item: item)
     }

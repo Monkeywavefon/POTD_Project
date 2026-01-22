@@ -8,6 +8,7 @@
 import UIKit
 protocol PhotoViewerDelegate: AnyObject {
     func didSelect(item: APODItem)
+    func isEmpty(empty: Bool)
 }
 final class PhotoViewer: UIView {
     weak var delegate: PhotoViewerDelegate?
@@ -20,7 +21,7 @@ final class PhotoViewer: UIView {
         layout.sectionInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
 
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = .systemBackground
+        cv.backgroundColor = .clear
         cv.dataSource = self
         cv.delegate = self
         cv.register(APODCell.self, forCellWithReuseIdentifier: APODCell.identifier)
@@ -39,6 +40,10 @@ final class PhotoViewer: UIView {
     }
 
     private func setupView() {
+        backgroundColor = .lightGray
+        clipsToBounds = true
+        layer.cornerRadius = 20
+        
         addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -54,6 +59,7 @@ final class PhotoViewer: UIView {
 
     func update(items: [APODItem]) {
         self.items = items.sorted { $0.date > $1.date }
+        delegate?.isEmpty(empty: self.items.isEmpty)
         collectionView.reloadData()
     }
 }
