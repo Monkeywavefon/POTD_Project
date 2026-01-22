@@ -17,15 +17,16 @@ final class PhotoOfDayPresenter {
 extension PhotoOfDayPresenter: PhotoOfDayPresenterProtocol {
     
     func viewDidLoad() {
-        let current = Date()
-        let month = Calendar.current.component(.month, from: current)
-        let year = Calendar.current.component(.year, from: current)
-        didSelect(month: month, year: year)
+        self.router = PhotoOfDayRouter.init()
     }
     
     func didSelect(month: Int, year: Int) {
         view?.showLoading()
         interactor?.fetchPhotos(month: month, year: year)
+    }
+    
+    func didSelectWatchDetail(item: APODItem) {
+        router?.navigateToDetail(from: view, item: item)
     }
 }
 

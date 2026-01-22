@@ -19,6 +19,7 @@ protocol PhotoOfDayViewProtocol: AnyObject {
 protocol PhotoOfDayPresenterProtocol: AnyObject {
     func viewDidLoad()
     func didSelect(month: Int, year: Int)
+    func didSelectWatchDetail(item: APODItem)
 }
 
 // MARK: - Interactor
@@ -35,6 +36,7 @@ protocol PhotoOfDayInteractorOutputProtocol: AnyObject {
 // MARK: - Router
 protocol PhotoOfDayRouterProtocol {
     static func createModule() -> UIViewController
+    func navigateToDetail(from view: PhotoOfDayViewProtocol?, item: APODItem) 
 }
 
 protocol NASAAPIServiceProtocol {

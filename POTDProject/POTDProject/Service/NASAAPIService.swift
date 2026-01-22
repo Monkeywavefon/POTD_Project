@@ -10,9 +10,8 @@ import Foundation
 final class NASAAPIService: NASAAPIServiceProtocol {
     
     private let apiKey = "lMZDypKaZNC2A8aVjRXc0vkytB9bvGgRK0N075f1"
-    
     private let baseURL = "https://api.nasa.gov/planetary/apod"
-    
+
     func fetchAPOD(
         startDate: Date,
         endDate: Date,
@@ -23,7 +22,7 @@ final class NASAAPIService: NASAAPIServiceProtocol {
             completion(.failure(APIError.invalidURL))
             return
         }
-        
+        print(url)
         let request = URLRequest(url: url, timeoutInterval: 30)
         
         URLSession.shared.dataTask(with: request) { data, response, error in
@@ -59,9 +58,9 @@ final class NASAAPIService: NASAAPIServiceProtocol {
         formatter.dateFormat = "yyyy-MM-dd"
         
         components?.queryItems = [
+            URLQueryItem(name: "api_key", value: apiKey),
             URLQueryItem(name: "start_date", value: formatter.string(from: start)),
             URLQueryItem(name: "end_date", value: formatter.string(from: end)),
-            URLQueryItem(name: "api_key", value: apiKey)
         ]
         
         return components?.url

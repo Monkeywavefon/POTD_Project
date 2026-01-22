@@ -24,4 +24,11 @@ final class PhotoOfDayRouter: PhotoOfDayRouterProtocol {
         
         return view
     }
+    
+    func navigateToDetail(from view: PhotoOfDayViewProtocol?, item: APODItem) {
+        guard let vc = view as? UIViewController else { return }
+
+        let detailVC = PhotoDetailViewController(item: item)
+        vc.navigationController?.pushViewController(detailVC, animated: true)
+    }
 }

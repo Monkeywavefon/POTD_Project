@@ -19,9 +19,16 @@ final class PhotoOfDayInteractor {
 extension PhotoOfDayInteractor: PhotoOfDayInteractorProtocol {
     
     func fetchPhotos(month: Int, year: Int) {
+
         let start = DateHelper.startOfMonth(month: month, year: year)
-        let end = DateHelper.endOfMonth(month: month, year: year)
-        
+        let end   = DateHelper.endOfMonth(month: month, year: year)
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+
+        print(formatter.string(from: start))
+        print(formatter.string(from: end))
+
         apiService.fetchAPOD(startDate: start, endDate: end) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
